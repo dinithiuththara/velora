@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Fraunces", serif;
+  --font-sans: "Manrope", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  --color-ivory: #FAF6F1;
+  --color-ivory-dim: #F1EBE3;
+  --color-plum-950: #1D1620;
+  --color-plum-900: #241A29;
+  --color-plum-800: #362A3C;
+  --color-plum-600: #5B4C63;
+  --color-plum-400: #8B7C92;
+  --color-brass: #B08D57;
+  --color-brass-dark: #8C6F42;
+  --color-rose: #C98CA0;
+  --color-rose-dim: #F3E3E8;
+  --color-sage: #8A9A80;
+}
+
+body {
+  background-color: var(--color-ivory);
+  color: var(--color-plum-950);
+  font-family: var(--font-sans);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Tag-corner signature detail used on product cards */
+.tag-corner {
+  position: relative;
+}
+.tag-corner::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--color-ivory);
+  border: 1px solid var(--color-plum-400);
+  z-index: 10;
+}
+
+::selection {
+  background: var(--color-brass);
+  color: var(--color-ivory);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brass);
+  outline-offset: 2px;
+}
