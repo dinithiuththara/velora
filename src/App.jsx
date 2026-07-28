@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { WishlistProvider } from './context/WishlistContext'
+import { HeroProvider } from './context/HeroContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ChatbotWidget from './components/ChatbotWidget'
@@ -29,10 +30,11 @@ export default function App() {
     <AuthProvider>
       <CartProvider>
         <WishlistProvider>
+        <HeroProvider>
           <BrowserRouter>
             <div className="min-h-screen flex flex-col">
               <Navbar />
-              <main className="flex-1">
+              <main className="flex-1 pt-16">
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/login" element={<Login />} />
@@ -77,6 +79,7 @@ export default function App() {
               <ChatbotWidget />
             </div>
           </BrowserRouter>
+        </HeroProvider>
         </WishlistProvider>
       </CartProvider>
     </AuthProvider>
