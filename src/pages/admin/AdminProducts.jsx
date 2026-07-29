@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Pencil, Trash2, Plus, X } from 'lucide-react'
 import { products as initialProducts, categories } from '../../data/mockData'
+import { categoryPhoto } from '../../utils/placeholder'
 
 export default function AdminProducts() {
   const [products, setProducts] = useState(initialProducts)
@@ -22,8 +23,9 @@ export default function AdminProducts() {
     if (editing.id) {
       setProducts((prev) => prev.map((p) => (p.id === editing.id ? { ...p, ...data } : p)))
     } else {
+      const cat = categories.find((c) => c.id === data.categoryId)
       setProducts((prev) => [
-        { id: `p${Date.now()}`, sku: `VL-NEW-${prev.length + 1}`, rating: 0, reviewCount: 0, images: ['https://picsum.photos/seed/new/600/750'], colors: [], sizes: ['One size'], description: '', ...data },
+        { id: `p${Date.now()}`, sku: `VL-NEW-${prev.length + 1}`, rating: 0, reviewCount: 0, images: [categoryPhoto(data.name || 'New product', { extra: cat?.keywords })], colors: [], sizes: ['One size'], description: '', ...data },
         ...prev,
       ])
     }

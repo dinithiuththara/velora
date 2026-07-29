@@ -5,18 +5,18 @@
   --font-sans: "Manrope", sans-serif;
   --font-mono: "IBM Plex Mono", monospace;
 
-  --color-ivory: #FAF6F1;
-  --color-ivory-dim: #F1EBE3;
-  --color-plum-950: #1D1620;
-  --color-plum-900: #241A29;
-  --color-plum-800: #362A3C;
-  --color-plum-600: #5B4C63;
-  --color-plum-400: #8B7C92;
+  --color-ivory: #F7F8FA;
+  --color-ivory-dim: #EBEEF2;
+  --color-plum-950: #0A1628;
+  --color-plum-900: #10203A;
+  --color-plum-800: #1B3358;
+  --color-plum-600: #3E5A82;
+  --color-plum-400: #8098B8;
   --color-brass: #B08D57;
   --color-brass-dark: #8C6F42;
-  --color-rose: #C98CA0;
-  --color-rose-dim: #F3E3E8;
-  --color-sage: #8A9A80;
+  --color-rose: #A6524A;
+  --color-rose-dim: #F3E6E4;
+  --color-sage: #6E8A72;
 }
 
 body {
@@ -32,6 +32,7 @@ body {
 .font-mono {
   font-family: var(--font-mono);
 }
+
 /* Velora wordmark hover highlight */
 .logo-highlight {
   display: inline-block;
@@ -73,10 +74,11 @@ body {
   border: 1px solid var(--color-plum-400);
   z-index: 10;
 }
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-3px); }
   to { opacity: 1; transform: translateY(0); }
-} 
+}
 
 ::selection {
   background: var(--color-brass);

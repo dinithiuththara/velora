@@ -1,23 +1,20 @@
 import { Link } from 'react-router-dom'
-import { useState, useEffect } from 'react'
-import { ArrowRight, Sparkles } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { ArrowRight, ArrowLeft, Sparkles } from 'lucide-react'
 import ProductCard from '../components/ProductCard'
 import { useHero } from '../context/HeroContext'
 import { products, categories } from '../data/mockData'
+import { categoryPhoto } from '../utils/placeholder'
 
-const HERO_IMAGES = {
-  default: 'https://picsum.photos/seed/heroverlora/700/850',
-  outerwear: 'https://picsum.photos/seed/hero-outerwear/700/850',
-  knitwear: 'https://picsum.photos/seed/hero-knitwear/700/850',
-  footwear: 'https://picsum.photos/seed/hero-footwear/700/850',
-  accessories: 'https://picsum.photos/seed/hero-accessories/700/850',
-  tailoring: 'https://picsum.photos/seed/hero-tailoring/700/850',
-}
+const HERO_IMAGES = categories.reduce((acc, c) => {
+  acc[c.slug] = categoryPhoto(c.name, { width: 1800, height: 900, extra: `${c.keywords},model` })
+  return acc
+}, {})
 
 const SLIDES = [
-  { id: 's1', src: 'https://picsum.photos/seed/velora-slide-1/1800/900' },
-  { id: 's2', src: 'https://picsum.photos/seed/velora-slide-2/1800/900' },
-  { id: 's3', src: 'https://picsum.photos/seed/velora-slide-3/1800/900' },
+  { id: 's1', src: categoryPhoto('editorial', { width: 1800, height: 900, extra: 'fashion,model,coat', variant: '1' }) },
+  { id: 's2', src: categoryPhoto('editorial', { width: 1800, height: 900, extra: 'fashion,street,style', variant: '2' }) },
+  { id: 's3', src: categoryPhoto('editorial', { width: 1800, height: 900, extra: 'fashion,runway,model', variant: '3' }) },
 ]
 
 export default function Home() {
@@ -26,6 +23,11 @@ export default function Home() {
   const { hoveredCategory } = useHero()
   const activeKey = hoveredCategory || 'default'
   const [slide, setSlide] = useState(0)
+  const arrivalsRef = useRef(null)
+
+  function scrollArrivals(dir) {
+    arrivalsRef.current?.scrollBy({ left: dir * 300, behavior: 'smooth' })
+  }
 
   useEffect(() => {
     const id = setInterval(() => setSlide((s) => (s + 1) % SLIDES.length), 5000)
@@ -46,9 +48,7 @@ export default function Home() {
           />
         ))}
         {/* Category-hover overlay, takes priority over the slideshow */}
-        {Object.entries(HERO_IMAGES)
-          .filter(([key]) => key !== 'default')
-          .map(([key, src]) => (
+        {Object.entries(HERO_IMAGES).map(([key, src]) => (
             <img
               key={key}
               src={src}
@@ -113,35 +113,72 @@ export default function Home() {
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
         <div className="flex items-baseline justify-between mb-6">
-          <h2 className="font-display text-2xl text-plum-950">Shop by category</h2>
+          <h2 className="font-display text-2xl text-plum-950 uppercase tracking-wide">Shop by category</h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {categories.map((c) => (
-            <Link
-              key={c.id}
-              to={`/products?category=${c.slug}`}
-              className="group relative aspect-square rounded-xl overflow-hidden bg-ivory-dim"
-            >
-              <img
-                src={`https://picsum.photos/seed/${c.slug}/300/300`}
-                alt={c.name}
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-plum-950/30 flex items-end p-3">
-                <span className="text-ivory font-display text-sm">{c.name}</span>
-              </div>
-            </Link>
-          ))}
+          {categories.map((c) => {
+            const count = products.filter((p) => p.categoryId === c.id).length
+            return (
+              <Link
+                key={c.id}
+                to={`/products?category=${c.slug}`}
+                className="group relative aspect-square rounded-xl overflow-hidden bg-ivory-dim"
+              >
+                <img
+                  src={categoryPhoto(c.name, { width: 400, height: 400, extra: c.keywords })}
+                  alt={c.name}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-plum-950/20 group-hover:bg-plum-950/45 transition-colors duration-300" />
+                <div className="absolute inset-0 flex flex-col justify-end p-3">
+                  <span className="text-ivory font-display text-sm">{c.name}</span>
+                  <span className="text-ivory/0 group-hover:text-ivory/80 text-xs font-mono mt-1 max-h-0 group-hover:max-h-6 overflow-hidden transition-all duration-300">
+                    {count} pieces — Shop now
+                  </span>
+                </div>
+              </Link>
+            )
+          })}
         </div>
       </section>
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-        <div className="flex items-baseline justify-between mb-6">
-          <h2 className="font-display text-2xl text-plum-950">Just arrived</h2>
-          <Link to="/products" className="text-sm text-brass-dark hover:underline">View all</Link>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="font-display text-2xl text-plum-950 uppercase tracking-wide">New arrivals</h2>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => scrollArrivals(-1)}
+              aria-label="Scroll left"
+              className="w-9 h-9 rounded-full border border-plum-950/15 flex items-center justify-center hover:bg-ivory-dim transition-colors"
+            >
+              <ArrowLeft size={15} className="text-plum-800" />
+            </button>
+            <button
+              onClick={() => scrollArrivals(1)}
+              aria-label="Scroll right"
+              className="w-9 h-9 rounded-full border border-plum-950/15 flex items-center justify-center hover:bg-ivory-dim transition-colors"
+            >
+              <ArrowRight size={15} className="text-plum-800" />
+            </button>
+          </div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-5 gap-y-8">
-          {featured.map((p) => <ProductCard key={p.id} product={p} />)}
+        <div
+          ref={arrivalsRef}
+          className="flex gap-5 overflow-x-auto scroll-smooth snap-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pb-1"
+        >
+          {featured.map((p) => (
+            <div key={p.id} className="w-[47%] sm:w-[31%] lg:w-[23%] shrink-0 snap-start">
+              <ProductCard product={p} />
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-center mt-10">
+          <Link
+            to="/products"
+            className="inline-flex items-center gap-2 bg-plum-950 text-ivory rounded-full px-6 py-3 text-sm hover:bg-plum-800 transition-colors"
+          >
+            View all <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--color-brass)' }} />
+          </Link>
         </div>
       </section>
 
